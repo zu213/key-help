@@ -1,0 +1,23 @@
+{
+  "name": "hotkey-help",
+  "version": "1.0.0",
+  "description": "Log your terminals hotkeys",
+  "main": "main.js",
+  "bin": {
+    "zachupstone": "./main.js"
+  },
+  "scripts": {
+    "start": "node main.js"
+  },
+  "keywords": [
+    "zsh",
+    "bash",
+    "hotkey"
+  ],
+  "author": "Zach Upstone",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^5.4.1"
+  },
+  "type": "module"
+}
