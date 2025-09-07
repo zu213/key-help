@@ -7,11 +7,11 @@ mkdir -p "$INSTALL_DIR"
 cat > "$INSTALL_DIR/key-help" << 'EOF'
 #!/usr/bin/env bash
 if [ -n "$BASH_VERSION" ]; then
+  # Put bash hot keys here
   echo -e "\033[32mhello\033[0m"   # green
 elif [ -n "$ZSH_VERSION" ]; then
+  # Put zsh hot keys here
   echo -e "\033[34mhello\033[0m"   # blue
-else
-  echo "hello"
 fi
 EOF
 
@@ -25,7 +25,23 @@ if [ -n "$BASH_VERSION" ]; then
     READLINE_LINE=$buf
     READLINE_POINT=${#buf}
   }
-  bind -x '"\C-xh":print_help'
+  bind -x '"\C-h":print_help'
+fi
+
+# Ensure ~/.local/bin is in PATH
+if ! echo "$PATH" | grep -q "$HOME/.local/bin"; then
+  if [ -n "$BASH_VERSION" ]; then
+    SHELL_RC="$HOME/.bashrc"
+  elif [ -n "$ZSH_VERSION" ]; then
+    SHELL_RC="$HOME/.zshrc"
+  else
+    SHELL_RC="$HOME/.profile" # fallback
+  fi
+
+  if ! grep -q 'export PATH="$HOME/.local/bin:$PATH"' "$SHELL_RC" 2>/dev/null; then
+    echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$SHELL_RC"
+    echo "Added ~/.local/bin to PATH in $SHELL_RC"
+  fi
 fi
 
 # Zsh binding
@@ -41,4 +57,4 @@ if [ -n "$ZSH_VERSION" ]; then
   bindkey '^Xh' print_help
 fi
 
-echo "Successfully installed "key-help", also bound to ctrl+X + h
+echo "Successfully installed "key-help", also bound to ctrl+X + h"
