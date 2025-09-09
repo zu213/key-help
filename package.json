@@ -1,13 +1,13 @@
 {
   "name": "hotkey-help",
   "version": "1.0.0",
-  "description": "Log your terminals hotkeys",
-  "main": "main.js",
+  "description": "Log the terminals hotkeys",
+  "main": "kelp.sh",
   "bin": {
-    "zachupstone": "./main.js"
+    "hotkey-help": "./print-keys.sh"
   },
   "scripts": {
-    "start": "node main.js"
+    "run": "./print-keys.sh"
   },
   "keywords": [
     "zsh",
@@ -16,8 +16,5 @@
   ],
   "author": "Zach Upstone",
   "license": "ISC",
-  "dependencies": {
-    "chalk": "^5.4.1"
-  },
   "type": "module"
 }
