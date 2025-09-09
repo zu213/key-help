@@ -1,5 +1,51 @@
 #!/usr/bin/env bash
 
+data=(
+  "Movement" "--------------------------------"
+  "CTRL+A CTRL+E" "Go to the start/end of the command line"
+  "CTRL+XX" "Alternate cursor position with last position"
+  "ALT+B ALT+F" "Move backward/forward one word"
+  "CTRL+F CTRL+B" "Move forward/backward one character"
+
+  "Deletion & Pasting" "--------------------------------"
+  "CTRL+U CTRL+K" "Delete from cursor to the start/end of the line"
+  "CTRL+W ALT+D" "Delete from cursor to start/end of word"
+  "CTRL+D CTRL+H" "Delete character after/before under cursor"
+  "ALT+BACKSPACE" "Delete previous word"
+  "CTRL+Y" "Paste word or text that was cut using a deletion shortcuts"
+  
+  "Command rejigging" "--------------------------------"
+  "OPTION+C" "Capitalize to end of word starting at cursor"
+  "OPTION+U" "Make uppercase from cursor to end of word"
+  "OPTION+L" "Make lowercase from cursor to end of word"
+  "OPTION+T" "Swap current word with previous"
+  "CTRL+T" "Swap character under cursor with the previous one"
+  "CTRL+I" "Same as Tab (autocomplete / indent)"
+  "*ALT+**" "Insert all possible completions"
+
+  "Command searching" "--------------------------------"
+  "CTRL+R" "Search the history backwards"
+  "CTRL+J" "End the search at current history entry"
+  "CTRL+G" "Escape from history searching mode"
+  "CTRL+P" "Previous command in history"
+  "CTRL+N" "Next command in history"
+  "ALT+." "Use the last word of the previous command"
+  "TAB + TAB" "Show possible completions"
+
+  "Output control" "--------------------------------"
+  "CTRL+L" "Clear the screen"
+  "CTRL+S" "Stops the output to the screen"
+  "CTRL+Q" "Allow output to the screen (if previously stopped)"
+
+  "Command control" "--------------------------------"
+  "CTRL+C" "Terminate the command"
+  "CTRL+Z" "Suspend/stop the command"
+  "CTRL+V" "Insert a literal next character"
+  "CTRL+O" "Execute command and then fetch next from history"
+  "CTRL+M" "Same as Enter/Return"
+  "CTRL+_ CTRL+8" "Undo last command"
+)
+
 print_table() {
     # Colors
     local RED="\033[31m"
@@ -24,128 +70,42 @@ print_table() {
         local shortcut="${data[i]}"
         local desc="${data[i+1]}"
 
+        if [[ "${desc:0:1}" == "-" ]]; then
+          if [ "$i" -gt 5 ]; then
+            echo ""
+          fi
+          is_header=1
+        else
+          is_header=0
+        fi
+
         # Wrap description, indent overflow lines
         echo -e "$desc" | fold -s -w $desc_width | \
-        awk -v sw=$shortcut_width -v sc="$shortcut" -v reset="$RESET" -v bold="$BOLD" -v green="$GREEN" '
-            NR==1 { printf bold green "%-*s" reset " %s\n", sw, sc, $0 }
-            NR>1  { printf "%-*s %s\n", sw, "", $0 }
+        awk -v sw=$shortcut_width -v sc="$shortcut" -v reset="$RESET" -v bold="$BOLD" -v green="$GREEN" -v red="$RED" -v header=$is_header '
+          NR==1 {
+            left_color = (header==1) ? red : green
+            right_colour = (header==1) ? red : reset
+            printf bold left_color "%-*s %s%s\n", sw, sc, right_colour ,$0
+          }
+          NR>1 {
+            printf bold "%-*s %s%s\n", sw, "", reset, $0
+          }
         '
-    done
-}
-
-print_bash_shortcuts() {
-    local data=(
-      "CTRL+A CTRL+E" "Go to the start/end of the command line"
-      "CTRL+U CTRL+K" "Delete from cursor to the start/end of the command line"
-      "CTRL+W OPTION+D" "Delete from cursor to start/end of word (whole word if at the boundary)"
-      "CTRL+Y" "Paste word or text that was cut using one of the deletion shortcuts (such as the one above) after the cursor"
-      "CTRL+XX" "Move between start of command line and current cursor position (and back again)"
-      "OPTION+B OPTION+F" "Move backward/forward one word (or go to start of word the cursor is currently on)"
-      "OPTION+C" "Capitalize to end of word starting at cursor (whole word if cursor is at the beginning of word)"
-      "OPTION+U" "Make uppercase from cursor to end of word"
-      "OPTION+L" "Make lowercase from cursor to end of word"
-      "OPTION+T" "Swap current word with previous"
-      "CTRL+F CTRL+B" "Move forward/backward one character"
-      "CTRL+D CTRL+H" "Delete character after/before under cursor"
-      "CTRL+T" "Swap character under cursor with the previous one"
-      "CTRL+R" "Search the history backwards"
-      "CTRL+J" "End the search at current history entry"
-      "CTRL+G" "Escape from history searching mode"
-      "CTRL+P" "Previous command in history (i.e., walk back through the command history)"
-      "CTRL+N" "Next command in history (i.e., walk forward through the command history)"
-      "CTRL+_" "Undo last command"
-      "OPTION+." "Use the last word of the previous command"
-      "CTRL+L" "Clear the screen"
-      "CTRL+S" "Stops the output to the screen (for long running verbose command)"
-      "CTRL+Q" "Allow output to the screen (if previously stopped using command above)"
-      "CTRL+C" "Terminate the command"
-      "CTRL+Z" "Suspend/stop the command"
-      "CTRL+V" "Insert a literal next character (useful for typing control chars)"
-      "CTRL+O" "Execute command and then fetch next from history"
-      "CTRL+M" "Same as Enter/Return"
-      "CTRL+I" "Same as Tab (autocomplete / indent)"
-      "CTRL+8" "Undo (alias for CTRL+_)"
-
-      "ALT+?" "List possible completions (Zsh only)"
-      "ALT+R" "Revert line to original state (discard edits)"
-      "TAB + TAB" "Show possible completions"
-      "*ALT+**" "Insert all possible completions"
-      "ALT+DEL" "Delete previous word (like CTRL+W)"
-      "ALT+BACKSPACE" "Delete previous word (depending on terminal config)"
-      "CTRL+X CTRL+E" "Edit current command in \$EDITOR"
-    )
-
-    print_table
-
-    # Loop through array in chunks of 3 (Shortcut / Description / Shell)
-}
-
-print_zsh_shortcuts() {
-    # Colors
-    local RED="\033[31m"
-    local GREEN="\033[32m"
-    local BLUE="\033[34m"
-    local YELLOW="\033[33m"
-    local BOLD="\033[1m"
-    local RESET="\033[0m"
-
-    # Header
-    printf "${BOLD}${YELLOW}%-15s %-35s %-15s${RESET}\n" "Shortcut" "Description"
-    printf "%-15s %-35s %-15s\n" "---------------" "-----------------------------------"
-
-    # Data
-    local data=(
-      "CTRL+A CTRL+E" "Go to the start/end of the command line"
-      "CTRL+U CTRL+K" "Delete from cursor to the start/end of the command line"
-      "CTRL+W OPTION+D" "Delete from cursor to start/end of word (whole word if at the boundary)"
-      "CTRL+Y" "Paste word or text that was cut using one of the deletion shortcuts (such as the one above) after the cursor"
-      "CTRL+XX" "Move between start of command line and current cursor position (and back again)"
-      "OPTION+B OPTION+F" "Move backward/forward one word (or go to start of word the cursor is currently on)"
-      "OPTION+C" "Capitalize to end of word starting at cursor (whole word if cursor is at the beginning of word)"
-      "OPTION+U" "Make uppercase from cursor to end of word"
-      "OPTION+L" "Make lowercase from cursor to end of word"
-      "OPTION+T" "Swap current word with previous"
-      "CTRL+F CTRL+B" "Move forward/backward one character"
-      "CTRL+D CTRL+H" "Delete character after/before under cursor"
-      "CTRL+T" "Swap character under cursor with the previous one"
-      "CTRL+R" "Search the history backwards"
-      "CTRL+J" "End the search at current history entry"
-      "CTRL+G" "Escape from history searching mode"
-      "CTRL+P" "Previous command in history (i.e., walk back through the command history)"
-      "CTRL+N" "Next command in history (i.e., walk forward through the command history)"
-      "CTRL+_" "Undo last command"
-      "OPTION+." "Use the last word of the previous command"
-      "CTRL+L" "Clear the screen"
-      "CTRL+S" "Stops the output to the screen (for long running verbose command)"
-      "CTRL+Q" "Allow output to the screen (if previously stopped using command above)"
-      "CTRL+C" "Terminate the command"
-      "CTRL+Z" "Suspend/stop the command"
-      "CTRL+V" "Insert a literal next character (useful for typing control chars)"
-      "CTRL+O" "Execute command and then fetch next from history"
-      "CTRL+M" "Same as Enter/Return"
-      "CTRL+I" "Same as Tab (autocomplete / indent)"
-      "CTRL+8" "Undo (alias for CTRL+_)"
-
-      "ALT+?" "List possible completions (Zsh only)"
-      "ALT+R" "Revert line to original state (discard edits)"
-      "TAB + TAB" "Show possible completions (like hitting Tab twice)"
-      "*ALT+**" "Insert all possible completions"
-      "ALT+DEL" "Delete previous word (like CTRL+W)"
-      "ALT+BACKSPACE" "Delete previous word (depending on terminal config)"
-      "CTRL+X CTRL+E" "Edit current command in \$EDITOR"
-    )
-
-    # Loop through array in chunks of 3 (Shortcut / Description / Shell)
-    local i
-    for ((i=0; i<${#data[@]}; i+=3)); do
-        printf "%-15s %-35s %-15s\n" "${data[i]}" "${data[i+1]}" "${data[i+2]}"
     done
 }
 
 if [ -n "$BASH_VERSION" ]; then
   # Put bash hot keys here
-  print_bash_shortcuts
+  print_table
 elif [ -n "$ZSH_VERSION" ]; then
   # Put zsh hot keys here
-  print_zsh_shortcuts
+  data+=(  
+    "zsh only" "-------"
+    "ALT+?" "List possible completions"
+    "ALT+R" "Revert line to original state"
+    "ALT+DEL" "Delete previous word (like CTRL+W)"
+    "CTRL+X CTRL+E" "Edit current command in \$EDITOR"
+  )
+
+  print_table
 fi
