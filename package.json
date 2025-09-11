@@ -1,13 +1,10 @@
 {
   "name": "hotkey-help",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Log the terminals hotkeys",
   "main": "kelp.sh",
-  "bin": {
-    "hotkey-help": "./print-keys.sh"
-  },
   "scripts": {
-    "run": "./print-keys.sh"
+    "postinstall": "sh ./kelp.sh"
   },
   "keywords": [
     "zsh",

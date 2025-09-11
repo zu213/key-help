@@ -1,19 +1,23 @@
-# Key Help
+# 🔑 Hotkey Help
 
-installer for a quick hto key helper for you current terminal, supports bash and zsh
+Installer for a quick hotkey helper for you current terminal, supports `bash` and `zsh`.
 
 ## Usage
 
-Run in a terminal and download the package (can be re-run anytime after download):
+Either use the command `key-help` or the hot keys `ctrl+x+h` for the print out. Your current terminal buffer will be carried over if you sue the hotkey.
 
-### with npm
+## Installation
 
-```bash
-$ npm key-help
-```
+### With npm
 
-### otherwise
+`npm i hotkey-help`
+
+The install script should run automatically on npm i.
+
+### Otherwise
 
 - Clone repo
 - `Chmod +x ./kelp.sh`
-- `./kelp.sh`
+- `source ./kelp.sh`
+
+Alternatively you can simply run `./print-keys.sh` for the print out.
