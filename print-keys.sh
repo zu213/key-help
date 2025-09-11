@@ -100,7 +100,7 @@ if [ -n "$BASH_VERSION" ]; then
 elif [ -n "$ZSH_VERSION" ]; then
   # Put zsh hot keys here
   data+=(  
-    "zsh only" "-------"
+    "zsh Only" "--------------------------------"
     "ALT+?" "List possible completions"
     "ALT+R" "Revert line to original state"
     "ALT+DEL" "Delete previous word (like CTRL+W)"
