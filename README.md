@@ -10,7 +10,7 @@ Either use the command `key-help` or the hot keys `ctrl+x+h` for the print out. 
 
 ### With npm
 
-`npm i hotkey-help`
+`npm i -g hotkey-help`
 
 The install script should run automatically on npm i.
 
