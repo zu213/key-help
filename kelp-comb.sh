@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 mkdir -p ~/bin
 cat <<'EOF' > ~/bin/key-help
@@ -122,7 +122,8 @@ print_help() {
 }
 bind -x '\''"\C-x\C-h":print_help'\''
 '
-elif [ -n "$ZSH_VERSION" ]; then
+fi
+if [ -n "$ZSH_VERSION" ]; then
   SHELL_RC="$HOME/.zshrc"
   PRINT_HELP='
 print_help() {
@@ -134,9 +135,6 @@ print_help() {
 zle -N print_help
 bindkey "^Xh" print_help
 '
-else
-  SHELL_RC="$HOME/.profile" # fallback
-  PRINT_HELP=''
 fi
 # Ensure ~/bin is in PATH
 if ! grep -q 'export PATH="$HOME/bin:$PATH"' "$SHELL_RC" 2>/dev/null; then
